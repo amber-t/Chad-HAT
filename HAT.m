@@ -14,6 +14,7 @@ Ve=X(8);
 Vi=X(9);
 Vr=X(10);
 
+
 Bh = muH*H + (1-rho)*gammaH2*Hi2 + rho*(1-epi)*p*zeta*Hi2; %human birth rate
 lambdaVH = betaV*betaVH*(Hi1/H); %prob of a suscpetible tsetse become infected from a human blood meal
 muV = muV0*(1 + muV1*V); %tsetse death rate
