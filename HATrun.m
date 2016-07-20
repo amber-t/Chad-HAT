@@ -1,9 +1,10 @@
-%% parameters (days)
-
+%x=[0.3750,0.1751,202];
+function [out] = HATrun(x)
+%% parameters (years)
 %humans
 H=300;
 muH=1/59; %4.66e-5; %human death rate
-betaH= x(1) %0.1751; %transmission prob from tsetse > human
+betaH=x(1); %0.1751; %transmission prob from tsetse > human
 tauH=365/12; %human incubation period
 gammaH1=365/526; %stage 1 infectious period
 gammaH2=365/252; %stage 2 infectious period
@@ -16,7 +17,7 @@ muV0=365*0.030; %tsetse death rate no comp
 muV1=0.0002; %tsetse death comp param
 sigmaV=365; %susceptibility period
 aH=365/3; %human bite rate
-betaVH= x(2); %0.3750; %proportion of tsetse bites on humans
+betaVH=x(2); %0.3750; %proportion of tsetse bites on humans
 tauV=365/25; %incubation period in tsetse
 betaV=0.2;
 
@@ -101,28 +102,22 @@ S1(4)=(X3(end,3))/sum(X3(end,1:5)); %2012 s1
 S2(4)=(X3(end,4))/sum(X3(end,1:5)); %2012 s2
 V(4)=(X3(end,9))/sum(X3(end,6:10)); %2012 Vi
 
-X04=X3(end,:);
-cov=0.803716*0.87; %coverage=attendance*sensitivity
-X04(5)=X04(5)+cov*(X04(3)+X03(4)); %new recovered after active surveillance
-X04(3)=(1-cov)*X04(3); %new s1 are those who weren't covered in surveillance
-X04(4)=(1-cov)*X04(4); %new s2
+%X04=X3(end,:);
+%cov=0.803716*0.87; %coverage=attendance*sensitivity
+%X04(5)=X04(5)+cov*(X04(3)+X03(4)); %new recovered after active surveillance
+%X04(3)=(1-cov)*X04(3); %new s1 are those who weren't covered in surveillance
+%X04(4)=(1-cov)*X04(4); %new s2
 
-tspan4=linspace(0,1,2); %run from end of 2011 to end of 2012
-[t4,X4]=ode23s(@HAT,tspan4,X04,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,...
-    gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
+%tspan4=linspace(0,1,2); %run from end of 2011 to end of 2012
+%[t4,X4]=ode23s(@HAT,tspan4,X04,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,...
+   % gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
 
 %% 2013
-S1(5)=(X4(end,3))/sum(X4(end,1:5)); %2013
-S2(5)=(X4(end,4))/sum(X4(end,1:5)); %2013
-V(5)=(X4(end,9))/sum(X4(end,6:10)); %2013 Vi
+%S1(5)=(X4(end,3))/sum(X4(end,1:5)); %2013
+%S2(5)=(X4(end,4))/sum(X4(end,1:5)); %2013
+%V(5)=(X4(end,9))/sum(X4(end,6:10)); %2013 Vi
 
 S1=S1'; S2=S2'; V=V';
 
-%S1=vertcat(X(:,3),S1);
-%S2=vertcat(X(:,4),S2);
-%V=vertcat(X(:,9),V);
-
-Inf=horzcat(S1,S2,V);
-
-xval=[0:1:4];
-plot(xval,Inf)
+out{1}=horzcat(S1,S2,V);
+out{2}=X3(end,:);
