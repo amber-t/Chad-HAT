@@ -3,7 +3,7 @@
 %humans
 H=300;
 muH=1/59; %4.66e-5; %human death rate
-betaH=0.1751; %transmission prob from tsetse > human
+betaH= x(1) %0.1751; %transmission prob from tsetse > human
 tauH=365/12; %human incubation period
 gammaH1=365/526; %stage 1 infectious period
 gammaH2=365/252; %stage 2 infectious period
@@ -16,7 +16,7 @@ muV0=365*0.030; %tsetse death rate no comp
 muV1=0.0002; %tsetse death comp param
 sigmaV=365; %susceptibility period
 aH=365/3; %human bite rate
-betaVH=0.3750; %proportion of tsetse bites on humans
+betaVH= x(2); %0.3750; %proportion of tsetse bites on humans
 tauV=365/25; %incubation period in tsetse
 betaV=0.2;
 
@@ -27,10 +27,10 @@ P1TP=1; %prob of treatment after testing +ve for stage I
 P2=1; %prob of stage II individual getting a CATT test
 P2PD=0.87; %sensitivity of test for stage II
 P2TP=1; %prob of treatment after testing +ve for stage II
-eps1=0.94; %efficiency of stage I treatment 
+eps1=0.94; %efficiency of stage I treatment
 eps2=0.965; %efficiency of stage II treatment (nifurtimox-eflornithine)
 zeta1=1; %treatment seeking rate for stage II patients
-zeta2=1/202; %treatment seeking rate for stage II patients
+zeta2=1/x(3); %treatment seeking rate for stage II patients
 p2=0.007; %probability of death due to stage 2 treatment failure
 deltaH=365/50; %immune period in humans after treatment
 
@@ -47,7 +47,6 @@ X_0=horzcat(h_0,v_0);
     gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
 
 %% equilibrium prevalences (2002)
-
 S1(1)=(X(end,3))/sum(X(end,1:5)); %2002 s1
 S2(1)=(X(end,4))/sum(X(end,1:5)); %2002 s2
 V(1)=(X(end,9))/sum(X(end,6:10)); %2002 Vi
@@ -102,13 +101,13 @@ S1(4)=(X3(end,3))/sum(X3(end,1:5)); %2012 s1
 S2(4)=(X3(end,4))/sum(X3(end,1:5)); %2012 s2
 V(4)=(X3(end,9))/sum(X3(end,6:10)); %2012 Vi
 
-X04=X3(end,:); 
+X04=X3(end,:);
 cov=0.803716*0.87; %coverage=attendance*sensitivity
 X04(5)=X04(5)+cov*(X04(3)+X03(4)); %new recovered after active surveillance
 X04(3)=(1-cov)*X04(3); %new s1 are those who weren't covered in surveillance
 X04(4)=(1-cov)*X04(4); %new s2
 
-tspan4=linspace(0,1,2); %run from end of 2011 to end of 2012 
+tspan4=linspace(0,1,2); %run from end of 2011 to end of 2012
 [t4,X4]=ode23s(@HAT,tspan4,X04,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,...
     gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
 
