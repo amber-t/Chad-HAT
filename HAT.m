@@ -1,25 +1,20 @@
 %% HAT: SEIR model with vectored transmission
-function dX=HAT(t,X,delta,a,betaVH,betaH,H,muH,taoH,gammaH1,epi,zeta,...
-    gammaH2,p,Bv,eta,sigmaV,taoV,rho,muV0,muV1,V,betaV)
+function dX=HAT(t,X,delta,a,betaVH,betaH,betaV,muH,taoH,gammaH1,epi1,epi2,zeta1,zeta2,...
+    gammaH2,p2,Bv,eta,sigmaV,taoV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP)
 %% parameters
-Hs=X(1);
-He=X(2);
-Hi1=X(3);
-Hi2=X(4);
-Hr=X(5);
-
-Vp=X(6);
-Vs=X(7);
-Ve=X(8);
-Vi=X(9);
-Vr=X(10);
+Hs=X(1); He=X(2); Hi1=X(3); Hi2=X(4); Hr=X(5); 
+Vp=X(6); Vs=X(7); Ve=X(8); Vi=X(9); Vr=X(10);
 
 H=Hs+He+Hi1+Hi2+Hr;
 V=Vp+Vs+Ve+Vi+Vr;
 
-Bh = muH*H + (1-rho)*gammaH2*Hi2 + rho*(1-epi)*p*zeta*Hi2; %human birth rate
+phi1=P1*P1PD*P1TP; %coverage stage 1 
+phi2=P2*P2PD*P2TP; %coversage stage 2
+
+Bh = muH*H + (1-phi2)*gammaH2*Hi2 + phi2*(1-epi2)*p2*zeta2*Hi2; %human birth rate
 lambdaVH = betaV*betaVH*(Hi1/H); %prob of a suscpetible tsetse become infected from a human blood meal
 muV = muV0*(1 + muV1*V); %tsetse death rate
+
 
 dX=zeros(10,1);
 
@@ -27,9 +22,9 @@ dX=zeros(10,1);
 %humans
 dHs = Bh + delta*Hr - a*betaVH*betaH*Vi*(Hs/H) - muH*Hs;
 dHe = a*betaVH*betaH*Vi*(Hs/H) - taoH*He - muH*He;
-dHi1 = taoH*He - gammaH1*Hi1 - muH*Hi1;
-dHi2 = gammaH1*Hi1 - rho*epi*zeta*Hi2 - (1 - rho)*gammaH2*Hi2 - rho*(1-epi)*p*zeta*Hi2 - muH*Hi2;
-dHr = rho*epi*zeta*Hi2 - delta*Hr - muH*Hr;
+dHi1 = taoH*He - phi1*epi1*zeta1*Hi1 - (1-phi1)*gammaH1*Hi1 - muH*Hi1;
+dHi2 = (1-phi1)*gammaH1*Hi1 + - phi2*epi2*zeta2*Hi2 - (1 - phi2)*gammaH2*Hi2 - phi2*(1-epi2)*p2*zeta2*Hi2 - muH*Hi2;
+dHr = phi1*epi1*zeta1*Hi1 + phi2*epi2*zeta2*Hi2 - delta*Hr - muH*Hr;
 
 %tsetse
 dVp = Bv*V + eta*Vp;
