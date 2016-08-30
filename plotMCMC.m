@@ -3,7 +3,7 @@ load('output.mat')
 a=find(Likelihood~=0); %index of non-zero likelihoods
 b=Likelihood(Likelihood~=0); %non-zero likelihood values
 p=params(a,:); %parameter values of non-zero likelihood [betaH,betaVH,zeta]
-for i=1:22
+for i=1:20
 out=HATrun(p(i,:));
 m=out{1};
 s1(:,i)=m(:,1);

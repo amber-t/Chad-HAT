@@ -16,8 +16,8 @@ ci2 = quantile(y,[0.005,0.995]); %s2, 2002 confidence interval
 
 %% Likelihood
 
-N=10000;
-parmas=zeros(N,4);
+N=50000;
+params=zeros(N,3);
 
 parfor j = 1:N
        betaH = rand;
@@ -32,7 +32,7 @@ parfor j = 1:N
                || (out{1}(5)>=ci2(2));
            Likelihood(j)=0;
        else
-           Lik1=1; Lik2= 1;
+           Lik1=1; Lik2=1;
            for i=1:4
                Lik1=Lik1*betapdf(out{1}(i),Data(i,1),SampSize(i,1));
                Lik2=Lik2*betapdf(out{1}(i+4),Data(i,2),SampSize(i,2));
@@ -45,3 +45,4 @@ parfor j = 1:N
 end
 
 save('output','params','Likelihood')
+
