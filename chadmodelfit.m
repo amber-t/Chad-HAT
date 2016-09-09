@@ -1,4 +1,6 @@
 %% Data and Sample Size
+tic;
+
 Data = [273, 139;
        197, 68;
        53 , 18;
@@ -11,12 +13,12 @@ SampSize = [11046, 11046;
 
 x = betarnd(273,11046,10000,1);
 y = betarnd(139,11046,10000,1);
-ci1 = quantile(x,[0.005,0.995]); %s1, 2002 confidence interval
-ci2 = quantile(y,[0.005,0.995]); %s2, 2002 confidence interval
+ci1 = quantile(x,[0.0025,0.9975]); %s1, 2002 confidence interval
+ci2 = quantile(y,[0.0025,0.9975]); %s2, 2002 confidence interval
 
 %% Likelihood
 
-N=50000;
+N=1000000;
 params=zeros(N,3);
 
 parfor j = 1:N
@@ -41,8 +43,9 @@ parfor j = 1:N
            end
            Likelihood(j)=Lik1*Lik2;
            %Likelihood(j)=prod(Lik1)*prod(Lik2);
-       end
+      end
 end
 
-save('output','params','Likelihood')
+save('output4','params','Likelihood')
 
+toc

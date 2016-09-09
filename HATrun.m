@@ -3,7 +3,7 @@ function [out] = HATrun(x)
 %% parameters (years)
 %humans
 H=300;
-muH=1/59; %4.66e-5; %human death rate
+muH=1/51; %%human death rate for Chad
 betaH=x(1); %0.1751; %transmission prob from tsetse > human
 tauH=365/12; %human incubation period
 gammaH1=365/526; %stage 1 infectious period
