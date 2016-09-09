@@ -1,0 +1,315 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HATrun</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-08-26"><meta name="DC.source" content="HATrun.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">parameters (years)</a></li><li><a href="#5">initial conditions</a></li><li><a href="#6">ode45</a></li><li><a href="#7">equilibrium prevalences (2002)</a></li><li><a href="#8">end of 2003, beg. 2004</a></li><li><a href="#9">end of 2005, beg. 2006</a></li><li><a href="#10">end of 2011; beg. 2012</a></li><li><a href="#11">2013</a></li></ul></div><pre class="codeinput"><span class="comment">%x=[0.3750,0.1751,202];</span>
+<span class="keyword">function</span> [out] = HATrun(x)
+</pre><h2>parameters (years)<a name="2"></a></h2><pre class="codeinput"><span class="comment">%humans</span>
+H=300;
+muH=1/59; <span class="comment">%4.66e-5; %human death rate</span>
+betaH=x(1); <span class="comment">%0.1751; %transmission prob from tsetse &gt; human</span>
+tauH=365/12; <span class="comment">%human incubation period</span>
+gammaH1=365/526; <span class="comment">%stage 1 infectious period</span>
+gammaH2=365/252; <span class="comment">%stage 2 infectious period</span>
+
+<span class="comment">%tsetse</span>
+V=5000;
+eta=365/20; <span class="comment">%pupae</span>
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in HATrun (line 7)
+betaH=x(1); %0.1751; %transmission prob from tsetse &gt; human
+</pre><p><img src="HATrun_eq15682195134482745114.png" alt="$x^2+e^{\pi i}$"> stage duration</p><pre class="codeinput">BV=365*0.05; <span class="comment">%tsetse birth rate</span>
+muV0=365*0.030; <span class="comment">%tsetse death rate no comp</span>
+muV1=0.0002; <span class="comment">%tsetse death comp param</span>
+sigmaV=365; <span class="comment">%susceptibility period</span>
+aH=365/3; <span class="comment">%human bite rate</span>
+</pre><p><img src="HATrun_eq17467035999183504765.png" alt="$$e^{\pi i} + 1 = 0$$"></p><p>% % % % %  PREFORMATTED % % % % %  TEXT</p><pre class="codeinput">betaVH=x(2); <span class="comment">%0.3750; %proportion of tsetse bites on humans</span>
+tauV=365/25; <span class="comment">%incubation period in tsetse</span>
+betaV=0.2;
+
+<span class="comment">%treatment</span>
+P1=0; <span class="comment">%prob of a stage I individual getting a CATT test</span>
+P1PD=0.87; <span class="comment">%sensitivity of test for stage I</span>
+P1TP=1; <span class="comment">%prob of treatment after testing +ve for stage I</span>
+P2=1; <span class="comment">%prob of stage II individual getting a CATT test</span>
+P2PD=0.87; <span class="comment">%sensitivity of test for stage II</span>
+P2TP=1; <span class="comment">%prob of treatment after testing +ve for stage II</span>
+eps1=0.94; <span class="comment">%efficiency of stage I treatment</span>
+eps2=0.965; <span class="comment">%efficiency of stage II treatment (nifurtimox-eflornithine)</span>
+zeta1=1; <span class="comment">%treatment seeking rate for stage II patients</span>
+zeta2=1/x(3); <span class="comment">%treatment seeking rate for stage II patients</span>
+p2=0.007; <span class="comment">%probability of death due to stage 2 treatment failure</span>
+deltaH=365/50; <span class="comment">%immune period in humans after treatment</span>
+</pre><h2>initial conditions<a name="5"></a></h2><pre class="codeinput"><span class="comment">%humans</span>
+h_0=[H,0,0,0,0]; <span class="comment">%[suscep,exposed,s1,s2,recovered]</span>
+<span class="comment">%tsetse</span>
+v_0=[BV*V/eta,0.99*V, 0, 0.01*V,0]; <span class="comment">%pupae,suscep,exposed,infected,recovered]</span>
+
+X_0=horzcat(h_0,v_0);
+</pre><h2>ode45<a name="6"></a></h2><pre class="codeinput">[t,X]=ode23s(@HAT,[0:1000],X_0,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,<span class="keyword">...</span>
+    gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
+</pre><h2>equilibrium prevalences (2002)<a name="7"></a></h2><pre class="codeinput">S1(1)=(X(end,3))/sum(X(end,1:5)); <span class="comment">%2002 s1</span>
+S2(1)=(X(end,4))/sum(X(end,1:5)); <span class="comment">%2002 s2</span>
+V(1)=(X(end,9))/sum(X(end,6:10)); <span class="comment">%2002 Vi</span>
+
+X01=X(end,:); <span class="comment">%new intiials</span>
+cov=0.66203*0.87; <span class="comment">%coverage=attendance*sensitivity</span>
+X01(5)=X01(5)+cov*(X01(3)+X01(4)); <span class="comment">%new recovered after active surveillance</span>
+X01(3)=(1-cov)*X01(3); <span class="comment">%new s1 are those who weren't covered in surveillance</span>
+X01(4)=(1-cov)*X01(4); <span class="comment">%new s2</span>
+
+tspan1=linspace(0,2,3); <span class="comment">% 2002-2004</span>
+[t1,X1]=ode23s(@HAT,tspan1,X01,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,<span class="keyword">...</span>
+    gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
+</pre><h2>end of 2003, beg. 2004<a name="8"></a></h2><pre class="codeinput">S1(2)=(X1(end,3))/sum(X1(end,1:5)); <span class="comment">%2004 s1</span>
+S2(2)=(X1(end,4))/sum(X1(end,1:5)); <span class="comment">%2004 s2</span>
+V(2)=(X1(end,9))/sum(X1(end,6:10)); <span class="comment">%2004 Vi</span>
+
+<span class="comment">%2004-2006</span>
+X02=X1(end,:); <span class="comment">%new intiials</span>
+cov=0.82607*0.87; <span class="comment">%coverage=attendance*sensitivity</span>
+X02(5)=X02(5)+cov*(X02(3)+X02(4)); <span class="comment">%new recovered after active surveillance</span>
+X02(3)=(1-cov)*X02(3); <span class="comment">%new s1 are those who weren't covered in surveillance</span>
+X02(4)=(1-cov)*X02(4); <span class="comment">%new s2</span>
+
+tspan2=linspace(0,2,3); <span class="comment">% 2004-2006</span>
+[t2,X2]=ode23s(@HAT,tspan2,X02,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,<span class="keyword">...</span>
+    gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
+</pre><h2>end of 2005, beg. 2006<a name="9"></a></h2><pre class="codeinput">S1(3)=(X2(end,3))/sum(X2(end,1:5)); <span class="comment">%2006 s1</span>
+S2(3)=(X2(end,4))/sum(X2(end,1:5)); <span class="comment">%2006 s2</span>
+V(3)=(X2(end,9))/sum(X2(end,6:10)); <span class="comment">%2006 Vi</span>
+
+<span class="comment">%2006-2012</span>
+X03=X2(end,:); <span class="comment">%new intiials</span>
+cov=0.57183*0.87; <span class="comment">%coverage=attendance*sensitivity</span>
+X03(5)=X03(5)+cov*(X03(3)+X03(4)); <span class="comment">%new recovered after active surveillance</span>
+X03(3)=(1-cov)*X03(3); <span class="comment">%new s1 are those who weren't covered in surveillance</span>
+X03(4)=(1-cov)*X03(4); <span class="comment">%new s2</span>
+
+tspan3=linspace(0,6,7); <span class="comment">% 2006-2012</span>
+[t3,X3]=ode23s(@HAT,tspan3,X03,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,<span class="keyword">...</span>
+    gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
+</pre><h2>end of 2011; beg. 2012<a name="10"></a></h2><pre class="codeinput">S1(4)=(X3(end,3))/sum(X3(end,1:5)); <span class="comment">%2012 s1</span>
+S2(4)=(X3(end,4))/sum(X3(end,1:5)); <span class="comment">%2012 s2</span>
+V(4)=(X3(end,9))/sum(X3(end,6:10)); <span class="comment">%2012 Vi</span>
+
+<span class="comment">%X04=X3(end,:);</span>
+<span class="comment">%cov=0.803716*0.87; %coverage=attendance*sensitivity</span>
+<span class="comment">%X04(5)=X04(5)+cov*(X04(3)+X03(4)); %new recovered after active surveillance</span>
+<span class="comment">%X04(3)=(1-cov)*X04(3); %new s1 are those who weren't covered in surveillance</span>
+<span class="comment">%X04(4)=(1-cov)*X04(4); %new s2</span>
+
+<span class="comment">%tspan4=linspace(0,1,2); %run from end of 2011 to end of 2012</span>
+<span class="comment">%[t4,X4]=ode23s(@HAT,tspan4,X04,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,...</span>
+   <span class="comment">% gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);</span>
+</pre><h2>2013<a name="11"></a></h2><pre class="codeinput"><span class="comment">%S1(5)=(X4(end,3))/sum(X4(end,1:5)); %2013</span>
+<span class="comment">%S2(5)=(X4(end,4))/sum(X4(end,1:5)); %2013</span>
+<span class="comment">%V(5)=(X4(end,9))/sum(X4(end,6:10)); %2013 Vi</span>
+
+S1=S1'; S2=S2'; V=V';
+
+out{1}=horzcat(S1,S2,V);
+out{2}=X3(end,:);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%x=[0.3750,0.1751,202];
+function [out] = HATrun(x)
+%% parameters (years)
+%humans
+H=300;
+muH=1/59; %4.66e-5; %human death rate
+betaH=x(1); %0.1751; %transmission prob from tsetse > human
+tauH=365/12; %human incubation period
+gammaH1=365/526; %stage 1 infectious period
+gammaH2=365/252; %stage 2 infectious period
+
+%tsetse
+V=5000;
+eta=365/20; %pupae 
+%%
+% $x^2+e^{\pi i}$ stage duration
+BV=365*0.05; %tsetse birth rate
+muV0=365*0.030; %tsetse death rate no comp
+muV1=0.0002; %tsetse death comp param
+sigmaV=365; %susceptibility period
+aH=365/3; %human bite rate
+%%
+% 
+% $$e^{\pi i} + 1 = 0$$
+% 
+% % % % % %  PREFORMATTED
+% % % % % %  TEXT
+% 
+% 
+betaVH=x(2); %0.3750; %proportion of tsetse bites on humans
+tauV=365/25; %incubation period in tsetse
+betaV=0.2;
+
+%treatment
+P1=0; %prob of a stage I individual getting a CATT test
+P1PD=0.87; %sensitivity of test for stage I
+P1TP=1; %prob of treatment after testing +ve for stage I
+P2=1; %prob of stage II individual getting a CATT test
+P2PD=0.87; %sensitivity of test for stage II
+P2TP=1; %prob of treatment after testing +ve for stage II
+eps1=0.94; %efficiency of stage I treatment
+eps2=0.965; %efficiency of stage II treatment (nifurtimox-eflornithine)
+zeta1=1; %treatment seeking rate for stage II patients
+zeta2=1/x(3); %treatment seeking rate for stage II patients
+p2=0.007; %probability of death due to stage 2 treatment failure
+deltaH=365/50; %immune period in humans after treatment
+
+%% initial conditions
+%humans
+h_0=[H,0,0,0,0]; %[suscep,exposed,s1,s2,recovered]
+%tsetse
+v_0=[BV*V/eta,0.99*V, 0, 0.01*V,0]; %pupae,suscep,exposed,infected,recovered]
+
+X_0=horzcat(h_0,v_0);
+
+%% ode45
+[t,X]=ode23s(@HAT,[0:1000],X_0,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,...
+    gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
+
+%% equilibrium prevalences (2002)
+S1(1)=(X(end,3))/sum(X(end,1:5)); %2002 s1
+S2(1)=(X(end,4))/sum(X(end,1:5)); %2002 s2
+V(1)=(X(end,9))/sum(X(end,6:10)); %2002 Vi
+
+X01=X(end,:); %new intiials
+cov=0.66203*0.87; %coverage=attendance*sensitivity
+X01(5)=X01(5)+cov*(X01(3)+X01(4)); %new recovered after active surveillance
+X01(3)=(1-cov)*X01(3); %new s1 are those who weren't covered in surveillance
+X01(4)=(1-cov)*X01(4); %new s2
+
+tspan1=linspace(0,2,3); % 2002-2004
+[t1,X1]=ode23s(@HAT,tspan1,X01,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,...
+    gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
+
+%% end of 2003, beg. 2004
+
+S1(2)=(X1(end,3))/sum(X1(end,1:5)); %2004 s1
+S2(2)=(X1(end,4))/sum(X1(end,1:5)); %2004 s2
+V(2)=(X1(end,9))/sum(X1(end,6:10)); %2004 Vi
+
+%2004-2006
+X02=X1(end,:); %new intiials
+cov=0.82607*0.87; %coverage=attendance*sensitivity
+X02(5)=X02(5)+cov*(X02(3)+X02(4)); %new recovered after active surveillance
+X02(3)=(1-cov)*X02(3); %new s1 are those who weren't covered in surveillance
+X02(4)=(1-cov)*X02(4); %new s2
+
+tspan2=linspace(0,2,3); % 2004-2006
+[t2,X2]=ode23s(@HAT,tspan2,X02,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,...
+    gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
+
+%% end of 2005, beg. 2006
+
+S1(3)=(X2(end,3))/sum(X2(end,1:5)); %2006 s1
+S2(3)=(X2(end,4))/sum(X2(end,1:5)); %2006 s2
+V(3)=(X2(end,9))/sum(X2(end,6:10)); %2006 Vi
+
+%2006-2012
+X03=X2(end,:); %new intiials
+cov=0.57183*0.87; %coverage=attendance*sensitivity
+X03(5)=X03(5)+cov*(X03(3)+X03(4)); %new recovered after active surveillance
+X03(3)=(1-cov)*X03(3); %new s1 are those who weren't covered in surveillance
+X03(4)=(1-cov)*X03(4); %new s2
+
+tspan3=linspace(0,6,7); % 2006-2012
+[t3,X3]=ode23s(@HAT,tspan3,X03,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,...
+    gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
+
+%% end of 2011; beg. 2012
+
+S1(4)=(X3(end,3))/sum(X3(end,1:5)); %2012 s1
+S2(4)=(X3(end,4))/sum(X3(end,1:5)); %2012 s2
+V(4)=(X3(end,9))/sum(X3(end,6:10)); %2012 Vi
+
+%X04=X3(end,:);
+%cov=0.803716*0.87; %coverage=attendance*sensitivity
+%X04(5)=X04(5)+cov*(X04(3)+X03(4)); %new recovered after active surveillance
+%X04(3)=(1-cov)*X04(3); %new s1 are those who weren't covered in surveillance
+%X04(4)=(1-cov)*X04(4); %new s2
+
+%tspan4=linspace(0,1,2); %run from end of 2011 to end of 2012
+%[t4,X4]=ode23s(@HAT,tspan4,X04,[],deltaH,aH,betaVH,betaH,muH,tauH,gammaH1,eps1,eps2,zeta1,zeta2,...
+   % gammaH2,p2,BV,eta,sigmaV,tauV,muV0,muV1,P1,P1PD,P1TP,P2,P2PD,P2TP,betaV);
+
+%% 2013
+%S1(5)=(X4(end,3))/sum(X4(end,1:5)); %2013
+%S2(5)=(X4(end,4))/sum(X4(end,1:5)); %2013
+%V(5)=(X4(end,9))/sum(X4(end,6:10)); %2013 Vi
+
+S1=S1'; S2=S2'; V=V';
+
+out{1}=horzcat(S1,S2,V);
+out{2}=X3(end,:);
+
+##### SOURCE END #####
+--></body></html>

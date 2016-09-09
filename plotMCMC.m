@@ -1,14 +1,14 @@
 %% find non-zero likelihood parameters
-load('output1.mat')
+load('output3.mat')
 a=find(Likelihood~=0); %index of non-zero likelihoods
 b=Likelihood(Likelihood~=0); %non-zero likelihood values
 p=params(a,:); %parameter values of non-zero likelihood [betaH,betaVH,zeta]
 s=size(b);
-for i=1:s(2)
-out=HATrun(p(i,:));
-m=out{1};
-s1(:,i)=m(:,1);
-s2(:,i)=m(:,2);
+parfor i=1:s(2)
+    out=HATrun(p(i,:));
+    m=out{1};
+    s1(:,i)=m(:,1);
+    s2(:,i)=m(:,2);
 end
 
 %% plots
@@ -37,7 +37,7 @@ Y=[s1(:,i_min)', flip(s1(:,i_max)')];
 fill(X,Y,[0.75 0.75 0.75],'EdgeColor','none')
 hold on
 
-for j=1:4 
+for j=1:4
 r1(:,j)=betarnd(Data(j,1),SampSize(j,1),10000,1); %generate 95 CIs
 err1(j,:)=quantile(r1(:,j),[0.025,0.975]);
 end
@@ -56,7 +56,7 @@ Y2=[s2(:,i2_min)', flip(s2(:,i2_max)')];
 fill(X,Y2,[0.75 0.75 0.75],'EdgeColor','none')
 hold on
 
-for j=1:4 
+for j=1:4
 r2(:,j)=betarnd(Data(j,2),SampSize(j,2),10000,1); %generate 95 CIs
 err2(j,:)=quantile(r2(:,j),[0.025,0.975]);
 end
@@ -70,3 +70,19 @@ ylabel('proportion stage 1')
 figure
 stem(b)
 title('Likelihood')
+
+
+% parfor i = 1:length(B)
+%     weights(i) = L(i)/sum(L);
+% end
+
+% total = 500;
+
+% j = 1;
+% while j < total+1
+%     k =randi(length(B),1);
+%     if(rand <weights(k))
+%     posterior(j,:)=Xpar(k,:);
+%      j = j+1;
+%     end
+% end

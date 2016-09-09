@@ -29,7 +29,7 @@ parfor j = 1:N
        %run model with randomly chosen parameters
        params(j,:) = [betaH, betaVH, zeta];
        out = HATrun(params(j,:)); %run model
-
+       % values{j} = out{1}
        if (out{1}(1)<=ci1(1)) || (out{1}(1)>=ci1(2)) || (out{1}(5)<=ci2(1))...
                || (out{1}(5)>=ci2(2));
            Likelihood(j)=0;
@@ -45,6 +45,13 @@ parfor j = 1:N
            %Likelihood(j)=prod(Lik1)*prod(Lik2);
       end
 end
+
+% a=find(Likelihood~=0); %index of non-zero likelihoods
+% b=Likelihood(Likelihood~=0); %non-zero likelihood values
+% p=params(a,:); %parameter values of non-zero likelihood [betaH,betaVH,zeta]
+% save_values = values{a};
+
+% save('output5',a,b,p,save_values)
 
 save('output4','params','Likelihood')
 
